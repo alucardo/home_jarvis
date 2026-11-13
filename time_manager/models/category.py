@@ -7,7 +7,16 @@ class Category(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='time_categories',
-        verbose_name='Time record categories',
     )
 
     name = models.CharField(max_length=150)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'name'], name='unique_name_for_user'),
+        ]
+        ordering = ['name']
+        verbose_name_plural = 'Categories'
+
+    def __str__(self):
+        return f"{self.name}"
