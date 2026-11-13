@@ -1,0 +1,8 @@
+from django.urls import path
+from time_manager import views
+
+app_name = 'time_manager'
+
+urlpatterns = [
+    path('categories/', views.category_index, name='category_index'),
+]
