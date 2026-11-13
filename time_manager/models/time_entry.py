@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
+from django.db.models import Q
+
 
 class TimeEntry(models.Model):
 
@@ -22,6 +24,15 @@ class TimeEntry(models.Model):
         null=True,
         blank=True,
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user'],
+                condition=Q(ended_at__isnull=True),
+                name='one_running_entry_per_user',
+            )
+        ]
 
     def clean(self):
         if self.started_at and self.ended_at:

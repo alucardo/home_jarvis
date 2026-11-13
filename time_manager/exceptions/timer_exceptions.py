@@ -1,0 +1,2 @@
+class TimerAlreadyRunningError(Exception):
+    pass
