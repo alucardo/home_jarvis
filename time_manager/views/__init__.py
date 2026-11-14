@@ -1,1 +1,1 @@
-from .category import category_index, category_create, category_delete
+from .category import category_create, category_delete, category_index

@@ -1,4 +1,5 @@
 from django.urls import path
+
 from time_manager import views
 
 app_name = 'time_manager'

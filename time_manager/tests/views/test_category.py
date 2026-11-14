@@ -1,9 +1,8 @@
 import pytest
 from django.urls import reverse
 
-from time_manager.tests.factories import TimeEntryFactory, CategoryFactory
-
 from time_manager.models import Category, TimeEntry
+from time_manager.tests.factories import CategoryFactory, TimeEntryFactory
 
 pytestmark = pytest.mark.django_db
 

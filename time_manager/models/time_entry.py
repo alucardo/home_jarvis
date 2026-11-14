@@ -1,11 +1,10 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.conf import settings
 from django.db.models import Q
 
 
 class TimeEntry(models.Model):
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -34,6 +33,13 @@ class TimeEntry(models.Model):
             )
         ]
 
+    def __str__(self):
+        return str(self.started_at)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def clean(self):
         if self.started_at and self.ended_at:
             if self.started_at > self.ended_at:
@@ -41,7 +47,3 @@ class TimeEntry(models.Model):
         if self.category_id:
             if self.user_id != self.category.user_id:
                 raise ValidationError("User must be the category owner")
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
