@@ -1,6 +1,7 @@
 import pytest
 from django.urls import reverse
-from django.utils import timezone
+
+from time_manager.tests.factories import TimeEntryFactory, CategoryFactory
 
 from time_manager.models import Category, TimeEntry
 
@@ -8,7 +9,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_category_index_shows_only_own_categories(client, user, other_user, category):
-    Category.objects.create(user=other_user, name="secret")
+    CategoryFactory(name="secret", user=other_user)
     client.force_login(user)
 
     response = client.get(reverse('time_manager:category_index'))
@@ -66,16 +67,13 @@ def test_category_delete_when_correct_removes_and_redirect_user(client, user, ca
 
 def test_category_delete_when_removing_removes_time_entry(client, user, category):
     client.force_login(user)
-    time_entry = TimeEntry.objects.create(user=user, category=category, started_at=timezone.now(),
-                                          ended_at=timezone.now())
-
-    second_category = Category.objects.create(user=user, name="Second Category")
-    second_time_entry = TimeEntry.objects.create(user=user, category=second_category, started_at=timezone.now())
+    time_entry = TimeEntryFactory(user=user, category=category)
+    time_entry_form_other_category = TimeEntryFactory(user=user)
 
     client.post(reverse('time_manager:category_delete', kwargs={'pk': category.id}))
 
     assert not TimeEntry.objects.filter(id=time_entry.id).exists()
-    assert TimeEntry.objects.filter(id=second_time_entry.id).exists()
+    assert TimeEntry.objects.filter(id=time_entry_form_other_category.id).exists()
 
 
 def test_category_delete_when_removing_not_existing_returns_404(client, user, category):
