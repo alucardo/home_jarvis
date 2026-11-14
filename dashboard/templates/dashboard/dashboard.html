@@ -3,7 +3,11 @@
 {% block content %}
 <main class="container mx-auto px-6 py-8">
     {% if running_entry %}
-    <p>Timer jest włączony</p>
+    <p>Obecny timer: {{ running_entry.category.name }} - Start: {{ running_entry.started_at|time:"H:i" }}</p>
+    <form method="post" action="{% url 'time_manager:timer_stop' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-ghost btn-sm">Zatrzymaj timer</button>
+    </form>
     {% else %}
     <form method="post" action="{% url 'time_manager:timer_start' %}" class="max-w-md">
         {% csrf_token %}

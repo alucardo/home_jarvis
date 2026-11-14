@@ -10,4 +10,5 @@ urlpatterns = [
     path("categories/<int:pk>/edit/", views.category_edit, name="category_edit"),
     path("categories/<int:pk>/delete/", views.category_delete, name="category_delete"),
     path("timer/start/", views.timer_start, name="timer_start"),
+    path("timer/stop/", views.timer_stop, name="timer_stop"),
 ]
