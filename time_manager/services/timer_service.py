@@ -5,7 +5,7 @@ from time_manager.models import TimeEntry
 
 
 def start_timer(user, category):
-    if TimeEntry.objects.filter(user=user, ended_at__isnull=True).exists():
+    if get_running_entry(user):
         raise TimerAlreadyRunningError("Timer already running")
 
     time_entry = TimeEntry.objects.create(
@@ -17,10 +17,14 @@ def start_timer(user, category):
 
 
 def stop_timer(user):
-    time_entry = TimeEntry.objects.filter(user=user, ended_at__isnull=True).first()
+    time_entry = get_running_entry(user)
     if not time_entry:
         raise TimerNotRunningError("Timer not running")
 
     time_entry.ended_at = timezone.now()
     time_entry.save()
     return time_entry
+
+
+def get_running_entry(user):
+    return TimeEntry.objects.filter(user=user, ended_at__isnull=True).select_related("category").first()

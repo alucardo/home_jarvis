@@ -1,5 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Cześć, {{ user.username }}</h1>
+<main class="container mx-auto px-6 py-8">
+    {% if running_entry %}
+    <p>Timer jest włączony</p>
+    {% else %}
+    <form method="post" action="{% url 'time_manager:timer_start' %}" class="max-w-md">
+        {% csrf_token %}
+        <label class="label" for="{{ timer_form.category.id_for_label }}">
+            <span class="label-text">{{ timer_form.category.label }}</span>
+        </label>
+        {{ timer_form.category }}
+        <button type="submit" class="btn btn-primary mt-4">Start</button>
+    </form>
+    {% endif %}
+</main>
+
+
 {% endblock %}
+
+

@@ -1,7 +1,8 @@
 import pytest
 
 from time_manager.exceptions.timer_exceptions import TimerAlreadyRunningError, TimerNotRunningError
-from time_manager.services.timer_service import start_timer, stop_timer
+from time_manager.services.timer_service import get_running_entry, start_timer, stop_timer
+from time_manager.tests.factories import TimeEntryFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -34,3 +35,13 @@ def test_stop_timer_returns_error_if_timer_is_not_running(user, category):
     stop_timer(user)
     with pytest.raises(TimerNotRunningError):
         stop_timer(user)
+
+
+def test_get_running_entry_none_when_no_running(user):
+    TimeEntryFactory(user=user)
+    assert get_running_entry(user) is None
+
+
+def test_get_running_entry_gets_running_entry(user):
+    time_entry = TimeEntryFactory(user=user, running=True)
+    assert get_running_entry(user) == time_entry
