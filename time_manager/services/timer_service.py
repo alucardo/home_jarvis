@@ -15,6 +15,7 @@ def start_timer(user, category):
     )
     return time_entry
 
+
 def stop_timer(user):
     time_entry = TimeEntry.objects.filter(user=user, ended_at__isnull=True).first()
     if not time_entry:

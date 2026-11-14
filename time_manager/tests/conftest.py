@@ -7,9 +7,11 @@ from time_manager.tests.factories import CategoryFactory, UserFactory
 def user(db):
     return UserFactory()
 
+
 @pytest.fixture
 def other_user(db):
     return UserFactory()
+
 
 @pytest.fixture
 def category(user):

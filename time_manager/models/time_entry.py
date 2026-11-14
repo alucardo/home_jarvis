@@ -8,13 +8,13 @@ class TimeEntry(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='time_entries',
+        related_name="time_entries",
     )
 
     category = models.ForeignKey(
-        'Category',
+        "Category",
         on_delete=models.CASCADE,
-        related_name='time_entries',
+        related_name="time_entries",
     )
 
     description = models.TextField(blank=True)
@@ -27,9 +27,9 @@ class TimeEntry(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['user'],
+                fields=["user"],
                 condition=Q(ended_at__isnull=True),
-                name='one_running_entry_per_user',
+                name="one_running_entry_per_user",
             )
         ]
 
