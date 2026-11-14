@@ -23,7 +23,16 @@
             {% for category in categories %}
             <tr>
                 <td>{{ category.name }}</td>
-                <td></td>
+                <td>
+                    <form method="post"
+                          action="{% url 'time_manager:category_delete' category.pk %}"
+                          onsubmit="return confirm('Usunąć kategorię i wszystkie wpisy?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-xs text-error">
+                            <i class="fa-solid fa-trash"></i> Usuń
+                        </button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
