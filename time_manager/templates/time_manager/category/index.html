@@ -24,14 +24,19 @@
             <tr>
                 <td>{{ category.name }}</td>
                 <td>
-                    <form method="post"
-                          action="{% url 'time_manager:category_delete' category.pk %}"
-                          onsubmit="return confirm('Usunąć kategorię i wszystkie wpisy?')">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-ghost btn-xs text-error">
-                            <i class="fa-solid fa-trash"></i> Usuń
-                        </button>
-                    </form>
+                    <div class="flex justify-end items-center gap-2">
+                        <a href="{% url 'time_manager:category_edit' category.id %}" class="btn btn-ghost btn-xs">
+                            <i class="fas fa-edit"></i> Edytuj
+                        </a>
+                        <form method="post"
+                              action="{% url 'time_manager:category_delete' category.pk %}"
+                              onsubmit="return confirm('Usunąć kategorię i wszystkie wpisy?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-ghost btn-xs">
+                                <i class="fa-solid fa-trash"></i> Usuń
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

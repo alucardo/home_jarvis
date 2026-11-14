@@ -21,7 +21,20 @@ def category_create(request):
     else:
         form = CategoryForm(user=request.user)
 
-    return render(request, "time_manager/category/create.html", {"form": form})
+    return render(request, "time_manager/category/form.html", {"form": form, "title": "Dodaj kategorię"})
+
+
+def category_edit(request, pk):
+    category = get_object_or_404(Category, pk=pk, user=request.user)
+    if request.method == "POST":
+        form = CategoryForm(request.POST, user=request.user, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect("time_manager:category_index")
+    else:
+        form = CategoryForm(instance=category, user=request.user)
+
+    return render(request, "time_manager/category/form.html", {"form": form, "title": "Edycja kategorii"})
 
 
 @require_POST

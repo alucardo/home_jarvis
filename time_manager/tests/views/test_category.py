@@ -54,6 +54,73 @@ def test_category_create_rejects_duplicate_name(client, user, category):
     assert Category.objects.filter(user=user, name=category.name).count() == 1
 
 
+def test_category_edit_get_shows_form_with_current_name(client, user, category):
+    client.force_login(user)
+
+    response = client.get(reverse("time_manager:category_edit", kwargs={"pk": category.id}))
+
+    assert response.status_code == 200
+    form = response.context["form"]
+    assert form.initial["name"] == category.name
+
+
+def test_category_edit_post_updates_name_and_redirect(client, user, category):
+    client.force_login(user)
+    new_name = "new name"
+
+    response = client.post(reverse("time_manager:category_edit", kwargs={"pk": category.id}), {"name": new_name})
+
+    assert response.status_code == 302
+    assert response.url == reverse("time_manager:category_index")
+    category.refresh_from_db()
+    assert category.name == new_name
+
+
+def test_category_edit_post_updates_with_the_same_name(client, user, category):
+    client.force_login(user)
+
+    response = client.post(reverse("time_manager:category_edit", kwargs={"pk": category.id}), {"name": category.name})
+
+    assert response.status_code == 302
+    assert response.url == reverse("time_manager:category_index")
+
+
+def test_category_edit_rejects_name_of_another_own_category(client, user, category):
+    second_category = CategoryFactory(user=user)
+    client.force_login(user)
+
+    response = client.post(
+        reverse("time_manager:category_edit", kwargs={"pk": category.id}), {"name": second_category.name}
+    )
+
+    assert response.status_code == 200
+    form = response.context["form"]
+    assert "name" in form.errors
+    assert "Taka kategoria już istnieje." in form.errors["name"]
+
+
+def test_category_edit_allow_the_same_name_with_other_user(client, user, category):
+    second_category = CategoryFactory()
+    client.force_login(user)
+
+    response = client.post(
+        reverse("time_manager:category_edit", kwargs={"pk": category.id}), {"name": second_category.name}
+    )
+
+    assert response.status_code == 302
+    assert response.url == reverse("time_manager:category_index")
+    category.refresh_from_db()
+    assert category.name == second_category.name
+
+
+def test_category_edit_other_user_category_not_found(client, other_user, category):
+    client.force_login(other_user)
+
+    response = client.post(reverse("time_manager:category_edit", kwargs={"pk": category.id}), {"name": "new name"})
+
+    assert response.status_code == 404
+
+
 def test_category_delete_when_correct_removes_and_redirect_user(client, user, category):
     client.force_login(user)
 

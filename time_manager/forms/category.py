@@ -18,6 +18,6 @@ class CategoryForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data["name"]
-        if Category.objects.filter(user=self.user, name=name).exists():
+        if Category.objects.filter(user=self.user, name=name).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("Taka kategoria już istnieje.")
         return name
