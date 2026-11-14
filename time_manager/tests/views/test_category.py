@@ -4,8 +4,9 @@ from django.utils import timezone
 
 from time_manager.models import Category, TimeEntry
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 def test_category_index_shows_only_own_categories(client, user, other_user, category):
     Category.objects.create(user=other_user, name="secret")
     client.force_login(user)
@@ -18,7 +19,6 @@ def test_category_index_shows_only_own_categories(client, user, other_user, cate
     assert "secret" not in html
 
 
-@pytest.mark.django_db
 def test_create_category_get_view_success(client, user):
     client.force_login(user)
     response = client.get(reverse('time_manager:category_create'))
@@ -26,7 +26,6 @@ def test_create_category_get_view_success(client, user):
     assert response.status_code == 200
 
 
-@pytest.mark.django_db
 def test_category_create(client, user):
     client.force_login(user)
     response = client.post(reverse('time_manager:category_create'), {'name': 'secret'})
@@ -36,7 +35,6 @@ def test_category_create(client, user):
     assert Category.objects.filter(user=user, name='secret').exists()
 
 
-@pytest.mark.django_db
 def test_category_create_reject_empty_name(client, user):
     client.force_login(user)
     response = client.post(reverse('time_manager:category_create'), {'name': ''})
@@ -46,7 +44,6 @@ def test_category_create_reject_empty_name(client, user):
     assert Category.objects.filter(user=user).count() == 0
 
 
-@pytest.mark.django_db
 def test_category_create_rejects_duplicate_name(client, user, category):
     client.force_login(user)
 
@@ -57,7 +54,6 @@ def test_category_create_rejects_duplicate_name(client, user, category):
     assert Category.objects.filter(user=user, name=category.name).count() == 1
 
 
-@pytest.mark.django_db
 def test_category_delete_when_correct_removes_and_redirect_user(client, user, category):
     client.force_login(user)
 
@@ -68,7 +64,6 @@ def test_category_delete_when_correct_removes_and_redirect_user(client, user, ca
     assert not Category.objects.filter(id=category.id).exists()
 
 
-@pytest.mark.django_db
 def test_category_delete_when_removing_removes_time_entry(client, user, category):
     client.force_login(user)
     time_entry = TimeEntry.objects.create(user=user, category=category, started_at=timezone.now(),
@@ -83,7 +78,6 @@ def test_category_delete_when_removing_removes_time_entry(client, user, category
     assert TimeEntry.objects.filter(id=second_time_entry.id).exists()
 
 
-@pytest.mark.django_db
 def test_category_delete_when_removing_not_existing_returns_404(client, user, category):
     category_id = category.id
     category.delete()
@@ -94,7 +88,6 @@ def test_category_delete_when_removing_not_existing_returns_404(client, user, ca
     assert response.status_code == 404
 
 
-@pytest.mark.django_db
 def test_category_delete_when_removing_not_users_returns_404(client, other_user, category):
     client.force_login(other_user)
 
@@ -104,7 +97,6 @@ def test_category_delete_when_removing_not_users_returns_404(client, other_user,
     assert Category.objects.filter(id=category.id).exists()
 
 
-@pytest.mark.django_db
 def test_category_delete_when_get_request_gets_405(client, user, category):
     client.force_login(user)
 
