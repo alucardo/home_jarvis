@@ -42,3 +42,25 @@ def test_time_entry_index_orders_newest_first(client, user):
     response = client.get(reverse("time_manager:time_entry_index"))
 
     assert list(response.context["time_entries"]) == [newer, older]
+
+
+def test_time_entry_index_marks_running_entry(client, user):
+    client.force_login(user)
+    time_entry = TimeEntryFactory(user=user, running=True)
+
+    response = client.get(reverse("time_manager:time_entry_index"))
+
+    assert list(response.context["time_entries"]) == [time_entry]
+    html = response.content.decode()
+    assert '<span class="badge badge-success animate-pulse">Trwa</span>' in html
+
+
+def test_time_entry_index_not_showing_badge_when_no_tuning_timers(client, user):
+    client.force_login(user)
+    time_entry = TimeEntryFactory(user=user)
+
+    response = client.get(reverse("time_manager:time_entry_index"))
+
+    assert list(response.context["time_entries"]) == [time_entry]
+    html = response.content.decode()
+    assert '<span class="badge badge-success animate-pulse">Trwa</span>' not in html
