@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
+from django.contrib.messages import constants as message_constants
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -113,6 +114,16 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+# Message tags mapped to DaisyUI classes
+
+MESSAGE_TAGS = {
+    message_constants.DEBUG: "alert-info",
+    message_constants.INFO: "alert-info",
+    message_constants.SUCCESS: "alert-success",
+    message_constants.WARNING: "alert-warning",
+    message_constants.ERROR: "alert-error",
+}
 
 
 # Internationalization

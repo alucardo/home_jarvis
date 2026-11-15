@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.decorators.http import require_POST
 
@@ -12,8 +13,11 @@ def timer_start(request):
     if form.is_valid():
         try:
             start_timer(request.user, form.cleaned_data["category"])
+            messages.success(request, "Timer wystartowany")
         except TimerAlreadyRunningError:
-            pass
+            messages.error(request, "Timer już działa")
+    else:
+        messages.error(request, "Błędna kategoria")
     return redirect("dashboard:dashboard")
 
 
@@ -21,6 +25,7 @@ def timer_start(request):
 def timer_stop(request):
     try:
         stop_timer(request.user)
+        messages.success(request, "Timer zatrzymany")
     except TimerNotRunningError:
-        pass
+        messages.error(request, "Brak działającego timera")
     return redirect("dashboard:dashboard")

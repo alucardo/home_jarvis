@@ -1,6 +1,8 @@
 import pytest
+from django.contrib import messages
 from django.urls import reverse
 
+from tests.helpers import message_levels
 from time_manager.models import TimeEntry
 from time_manager.tests.factories import CategoryFactory, TimeEntryFactory
 
@@ -16,6 +18,7 @@ def test_timer_start_creates_new_entry_and_redirects(client, user, category):
     time_entry = TimeEntry.objects.get(user=user)
     assert time_entry.category == category
     assert time_entry.ended_at is None
+    assert message_levels(response) == [messages.SUCCESS]
 
 
 def test_timer_start_with_other_users_category_creates_no_entry(client, user):
@@ -27,6 +30,7 @@ def test_timer_start_with_other_users_category_creates_no_entry(client, user):
     assert response.status_code == 302
     assert response.url == reverse("dashboard:dashboard")
     assert TimeEntry.objects.count() == 0
+    assert message_levels(response) == [messages.ERROR]
 
 
 def test_timer_start_when_running_not_starting_second(client, user, category):
@@ -38,6 +42,7 @@ def test_timer_start_when_running_not_starting_second(client, user, category):
     assert response.status_code == 302
     assert response.url == reverse("dashboard:dashboard")
     assert TimeEntry.objects.get(user=user) == started_time_entry
+    assert message_levels(response) == [messages.ERROR]
 
 
 def test_timer_stop_finishes_running_entry(client, user):
@@ -50,9 +55,10 @@ def test_timer_stop_finishes_running_entry(client, user):
     assert response.url == reverse("dashboard:dashboard")
     time_entry.refresh_from_db()
     assert time_entry.ended_at is not None
+    assert message_levels(response) == [messages.SUCCESS]
 
 
-def test_timer_stop_for_not_running_timer_redirect_without_error(client, user):
+def test_timer_stop_for_not_running_timer_redirect_with_error(client, user):
     client.force_login(user)
 
     response = client.post(reverse("time_manager:timer_stop"))
@@ -60,3 +66,4 @@ def test_timer_stop_for_not_running_timer_redirect_without_error(client, user):
     assert response.status_code == 302
     assert response.url == reverse("dashboard:dashboard")
     assert not TimeEntry.objects.exists()
+    assert message_levels(response) == [messages.ERROR]
