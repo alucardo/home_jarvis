@@ -1,22 +1,22 @@
 <div class="navbar bg-base-100 shadow-sm">
-  <div class="flex-1">
-    <a class="btn btn-ghost text-xl" href="/">JARVIS</a>
-  </div>
-  <div class="flex-none">
-    <ul class="menu menu-horizontal px-1">
-      <li>
-        <details>
-          <summary>Timer</summary>
-          <ul class="bg-base-100 rounded-t-none p-2">
-            <li><a>Link 1</a></li>
-            <li><a href="{% url 'time_manager:category_index' %}">Kategorie</a></li>
-          </ul>
-        </details>
-      </li>
-    </ul>
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-ghost btn-sm">Wyloguj</button>
-    </form>
-  </div>
+    <div class="flex-1">
+        <a class="btn btn-ghost text-xl" href="/">JARVIS</a>
+    </div>
+    <div class="flex-none">
+        <ul class="menu menu-horizontal px-1">
+            <li>
+                <details>
+                    <summary>Timer</summary>
+                    <ul class="bg-base-100 rounded-t-none p-2">
+                        <li><a href="{% url 'time_manager:time_entry_index' %}">Logi czasu</a></li>
+                        <li><a href="{% url 'time_manager:category_index' %}">Kategorie</a></li>
+                    </ul>
+                </details>
+            </li>
+        </ul>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-sm">Wyloguj</button>
+        </form>
+    </div>
 </div>

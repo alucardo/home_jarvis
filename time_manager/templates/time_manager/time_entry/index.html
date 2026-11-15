@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container mx-auto px-6 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-3">
+            <h1 class="text-2xl font-bold">Zalogowany czas</h1>
+        </div>
+        <div class="flex gap-2">
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th>Kategoria</th>
+                <th>Rozpoczęto</th>
+                <th>Zakończono</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for time_entry in time_entries %}
+            <tr>
+                <td>{{ time_entry.category.name }}</td>
+                <td>{{ time_entry.started_at }}</td>
+                <td>{{ time_entry.ended_at }}</td>
+                <td>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}
