@@ -12,4 +12,5 @@ urlpatterns = [
     path("timer/start/", views.timer_start, name="timer_start"),
     path("timer/stop/", views.timer_stop, name="timer_stop"),
     path("timer-entries/", views.time_entry_index, name="time_entry_index"),
+    path("timer-entries/<int:pk>/delete/", views.time_entry_delete, name="time_entry_delete"),
 ]
