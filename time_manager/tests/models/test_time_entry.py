@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from django.utils import timezone
 
 from time_manager.models import Category, TimeEntry
+from time_manager.tests.factories import TimeEntryFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -77,3 +78,16 @@ def test_db_rejects_second_running_entry_per_user(user, category):
                 )
             ]
         )
+
+
+def test_duration_of_finished_entry():
+    started_at = timezone.now()
+    entry = TimeEntryFactory(started_at=started_at, ended_at=started_at + timedelta(minutes=90))
+
+    assert entry.duration == timedelta(minutes=90)
+
+
+def test_duration_of_running_entry_is_zero():
+    entry = TimeEntryFactory(running=True)
+
+    assert entry.duration == timedelta(0)

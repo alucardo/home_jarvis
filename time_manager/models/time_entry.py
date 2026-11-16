@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -47,3 +49,9 @@ class TimeEntry(models.Model):
         if self.category_id:
             if self.user_id != self.category.user_id:
                 raise ValidationError("User must be the category owner")
+
+    @property
+    def duration(self):
+        if self.ended_at is None:
+            return timedelta(0)
+        return self.ended_at - self.started_at

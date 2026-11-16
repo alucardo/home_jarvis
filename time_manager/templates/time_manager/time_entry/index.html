@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load duration %}
 
 {% block content %}
 <main class="container mx-auto px-6 py-8">
@@ -17,6 +18,7 @@
                 <th>Kategoria</th>
                 <th>Rozpoczęto</th>
                 <th>Zakończono</th>
+                <th>Czas trwania</th>
                 <th></th>
             </tr>
             </thead>
@@ -31,6 +33,9 @@
                     {% else %}
                     <span class="badge badge-success animate-pulse">Trwa</span>
                     {% endif %}
+                </td>
+                <td>
+                    {% if time_entry.ended_at %}{{ time_entry.duration|duration }}{% endif %}
                 </td>
                 <td>
                     <div class="flex justify-end items-center gap-2">
